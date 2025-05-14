@@ -1,0 +1,35 @@
+{
+  "ADMIN123": {
+    "assigned_to": "John Doe",
+    "email": "john@example.com",
+    "created_at": "2025-05-08T12:00:00Z",
+    "expires_at": "2025-06-08T12:00:00Z",
+    "is_valid": true,
+    "uses_remaining": 10,
+    "last_used": null,
+    "notes": "Beta tester - interface evaluation",
+    "access_level": "standard"
+  },
+  "o2F2nE9j": {
+    "assigned_to": "Jane Smith",
+    "email": "jane@example.com",
+    "created_at": "2023-06-05T09:00:00Z",
+    "expires_at": "2023-07-05T09:00:00Z",
+    "is_valid": true,
+    "uses_remaining": 5,
+    "last_used": "2023-06-06T14:30:00Z",
+    "notes": "QA team member",
+    "access_level": "admin"
+  },
+  "PU6GST": {
+    "assigned_to": "Tester #1",
+    "email": "testtest@test.com",
+    "created_at": "2025-05-08T19:49:24.918569",
+    "expires_at": "2025-05-28T19:49:24.918569",
+    "is_valid": true,
+    "uses_remaining": 10,
+    "last_used": null,
+    "notes": "",
+    "access_level": "standard"
+  }
+}

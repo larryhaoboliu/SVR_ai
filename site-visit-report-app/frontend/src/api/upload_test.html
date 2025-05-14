@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Upload Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .response {
+      margin-top: 20px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Test Image Upload for GPT-4 Description</h1>
+
+    <div class="form-group">
+      <label for="fileInput">Choose an image to upload:</label>
+      <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <button id="uploadBtn">Upload and Generate Description</button>
+
+    <div class="response" id="responseDiv">
+      <h3>Response:</h3>
+      <p id="responseText">No response yet...</p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('uploadBtn').addEventListener('click', function () {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        alert('Please select an image to upload.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('photos', file);
+
+      // Send the file to the backend for processing
+      fetch('http://localhost:5000/api/generate-description', {
+        method: 'POST',
+        body: formData,
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Update the UI with the server's response
+        document.getElementById('responseText').textContent = data.description || 'No description generated';
+      })
+      .catch(error => {
+        console.error('Error uploading image:', error);
+        document.getElementById('responseText').textContent = 'Error: ' + error.message;
+      });
+    });
+  </script>
+</body>
+</html>

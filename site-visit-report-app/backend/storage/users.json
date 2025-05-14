@@ -1,0 +1,9 @@
+{
+  "admin": {
+    "username": "admin",
+    "salt": "95e6080522fe4a16acee727a7de5fedc",
+    "hashed_password": "537245c9f912879307ab6147e194a634846db607df8cc62481cde7afbb2c1619",
+    "is_admin": true,
+    "created_at": "2025-05-07T18:56:32.061389"
+  }
+}
