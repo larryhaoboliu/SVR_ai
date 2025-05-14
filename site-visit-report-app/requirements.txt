@@ -27,7 +27,7 @@ sentence-transformers==2.5.1
 pdfplumber==0.10.4
 
 # Security
-cryptography==42.0.4
+cryptography==44.0.1
 pytest==8.0.0  # For testing
 
 # Monitoring and Performance
