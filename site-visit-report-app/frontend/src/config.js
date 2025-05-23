@@ -23,8 +23,7 @@ const config = {
   
   production: {
     // In production, you would use the deployed backend URL
-    // apiBaseUrl: 'https://your-production-backend.herokuapp.com',
-    apiBaseUrl: process.env.REACT_APP_API_URL || 'https://your-production-backend.herokuapp.com',
+    apiBaseUrl: process.env.REACT_APP_API_URL || 'https://svr-backend.fly.dev',
     debug: false,
     logLevel: 'error',
   },

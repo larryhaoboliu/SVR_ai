@@ -1,34 +1,23 @@
 {
   "ADMIN123": {
-    "assigned_to": "John Doe",
-    "email": "john@example.com",
+    "assigned_to": "Larry Liu",
+    "email": "larryhaoboliu@gmail.com",
     "created_at": "2025-05-08T12:00:00Z",
-    "expires_at": "2025-06-08T12:00:00Z",
+    "expires_at": "2026-06-08T12:00:00Z",
     "is_valid": true,
-    "uses_remaining": 10,
+    "uses_remaining": 1000,
     "last_used": null,
-    "notes": "Beta tester - interface evaluation",
+    "notes": "Admin user",
     "access_level": "standard"
   },
-  "o2F2nE9j": {
-    "assigned_to": "Jane Smith",
-    "email": "jane@example.com",
-    "created_at": "2023-06-05T09:00:00Z",
-    "expires_at": "2023-07-05T09:00:00Z",
+  "RXVORK": {
+    "assigned_to": "Test_1",
+    "email": "test@gmail.com",
+    "created_at": "2025-05-22T15:46:29.653151",
+    "expires_at": "2025-06-01T15:46:29.653151",
     "is_valid": true,
-    "uses_remaining": 5,
-    "last_used": "2023-06-06T14:30:00Z",
-    "notes": "QA team member",
-    "access_level": "admin"
-  },
-  "PU6GST": {
-    "assigned_to": "Tester #1",
-    "email": "testtest@test.com",
-    "created_at": "2025-05-08T19:49:24.918569",
-    "expires_at": "2025-05-28T19:49:24.918569",
-    "is_valid": true,
-    "uses_remaining": 10,
-    "last_used": null,
+    "uses_remaining": 9,
+    "last_used": "2025-05-22T15:46:37.328735",
     "notes": "",
     "access_level": "standard"
   }

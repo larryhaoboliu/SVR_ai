@@ -1117,4 +1117,5 @@ def get_access_stats():
         return jsonify({"status": "error", "message": "Failed to get access statistics"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)  # Run Flask on port 5001
+    port = int(os.getenv("PORT", 5001))
+    app.run(host="0.0.0.0", port=port)
