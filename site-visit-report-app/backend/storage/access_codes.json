@@ -5,8 +5,8 @@
     "created_at": "2025-05-08T12:00:00Z",
     "expires_at": "2026-06-08T12:00:00Z",
     "is_valid": true,
-    "uses_remaining": 1000,
-    "last_used": null,
+    "uses_remaining": 999,
+    "last_used": "2025-05-24T11:35:03.686001",
     "notes": "Admin user",
     "access_level": "standard"
   },
