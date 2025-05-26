@@ -18,7 +18,7 @@ PyPDF2==3.0.1
 
 # AI/ML Components
 langchain==0.2.5
-langchain-core==0.1.17
+langchain-core==0.1.53
 langchain-huggingface==0.0.3
 faiss-cpu==1.7.4
 sentence-transformers==2.5.1
