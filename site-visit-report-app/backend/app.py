@@ -1,6 +1,6 @@
 import base64
 import requests
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 import os
 import sys
 import traceback
@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 # Load environment variables from .env file
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='')
 
 # Apply security middleware
 app = setup_security(app)
@@ -56,6 +56,20 @@ rag_service_instance = rag_service.get_rag_service()
 
 # Initialize storage
 storage_instance = get_storage()
+
+# Serve React App
+@app.route('/')
+def serve_react_app():
+    """Serve the React app's index.html"""
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_react_static(path):
+    """Serve React static files or fallback to index.html for client-side routing"""
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 @app.route("/health", methods=["GET"])
 def health_check():

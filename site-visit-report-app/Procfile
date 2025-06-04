@@ -1,1 +1,2 @@
-web: cd backend && gunicorn app:app 
+# TODO: Modify this Procfile to fit your needs
+web: gunicorn app:app

@@ -2,8 +2,7 @@ import os
 import logging
 from dotenv import load_dotenv
 
-# Import storage implementations
-from .s3_storage import get_s3_storage
+# Import local storage (always available)
 from .local_storage import get_local_storage
 
 # Configure logging
@@ -26,8 +25,15 @@ def get_storage():
         Storage implementation instance
     """
     if STORAGE_TYPE == "s3":
-        logger.info("Using S3 storage")
-        return get_s3_storage()
+        try:
+            # Import S3 storage only when needed
+            from .s3_storage import get_s3_storage
+            logger.info("Using S3 storage")
+            return get_s3_storage()
+        except ImportError as e:
+            logger.error(f"S3 storage requested but dependencies not available: {e}")
+            logger.info("Falling back to local storage")
+            return get_local_storage()
     else:
         logger.info("Using local file storage")
         return get_local_storage() 

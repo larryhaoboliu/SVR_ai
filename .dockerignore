@@ -1,0 +1,65 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+README*
+
+# Development files
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Node modules (will be installed during build)
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.env
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Test files
+test/
+tests/
+*.test.js
+
+# Images and media (not needed for deployment)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.svg
+*.ico
+
+# Generated reports
+Generated Reports/
+
+# Package files in root (duplicates)
+package*.json
+requirements.txt
+
+# Deployment scripts
+deploy*.sh
+deploy*.md
+PRODUCTION_DEPLOYMENT.md
+
+# Example files
+report page example*
+*example*
+
+# Temporary files
+*.tmp
+*.temp 

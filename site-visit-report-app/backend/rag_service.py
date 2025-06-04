@@ -5,12 +5,11 @@ import tempfile
 import logging
 from typing import List, Dict, Any, Optional
 
-from langchain.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import FAISS
-from langchain.document_loaders import TextLoader
-from langchain.vectorstores.base import VectorStore
-from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.vectorstores.base import VectorStore
+from langchain_community.embeddings import SentenceTransformerEmbeddings
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, 
