@@ -6,9 +6,8 @@ import logging
 from typing import List, Dict, Any, Optional
 
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_community.vectorstores.base import VectorStore
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 
 # Configure logging
