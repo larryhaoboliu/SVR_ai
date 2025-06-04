@@ -11,8 +11,6 @@ from langchain.vectorstores import FAISS
 from langchain.document_loaders import TextLoader
 from langchain.vectorstores.base import VectorStore
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
-import pinecone
-from langchain.vectorstores import Pinecone
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, 
@@ -30,75 +28,31 @@ VECTOR_STORE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 've
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"  # Fast and good quality model
 
 class RAGService:
-    """Service for Retrieval-Augmented Generation with product data."""
+    """Service for Retrieval-Augmented Generation with product data using local FAISS storage."""
     
     def __init__(self):
         """Initialize the RAG service."""
         self.embedding_model = SentenceTransformerEmbeddings(model_name=EMBEDDING_MODEL)
         self.vector_store = None
-        self.use_pinecone = False  # Will be set to True if Pinecone environment variables are found
-        self.pinecone_initialized = False
         self.initialize_vector_store()
     
     def initialize_vector_store(self):
         """Initialize the vector store from pickle file or create a new one."""
         try:
-            # Check for Pinecone environment variables
-            pinecone_api_key = os.getenv("PINECONE_API_KEY")
-            pinecone_environment = os.getenv("PINECONE_ENVIRONMENT")
-            pinecone_index_name = os.getenv("PINECONE_INDEX_NAME")
+            logger.info("Using local FAISS vector database")
             
-            # If all Pinecone variables are set, use Pinecone
-            if pinecone_api_key and pinecone_environment and pinecone_index_name:
-                logger.info("Using Pinecone as vector database")
-                self.use_pinecone = True
-                
-                if not self.pinecone_initialized:
-                    pinecone.init(api_key=pinecone_api_key, environment=pinecone_environment)
-                    self.pinecone_initialized = True
-                
-                # Check if index exists
-                if pinecone_index_name in pinecone.list_indexes():
-                    self.vector_store = Pinecone.from_existing_index(
-                        index_name=pinecone_index_name,
-                        embedding=self.embedding_model
-                    )
-                    logger.info(f"Connected to existing Pinecone index: {pinecone_index_name}")
-                else:
-                    # If index doesn't exist, let's create it with product data
-                    logger.info(f"Pinecone index '{pinecone_index_name}' not found. Creating and populating it.")
-                    self._create_pinecone_index(pinecone_index_name)
-                    self.rebuild_vector_store()
+            if os.path.exists(VECTOR_STORE_PATH):
+                with open(VECTOR_STORE_PATH, 'rb') as f:
+                    self.vector_store = pickle.load(f)
+                logger.info(f"Loaded vector store from {VECTOR_STORE_PATH}")
             else:
-                # Fall back to local FAISS
-                logger.info("Using local FAISS vector database")
-                self.use_pinecone = False
-                
-                if os.path.exists(VECTOR_STORE_PATH):
-                    with open(VECTOR_STORE_PATH, 'rb') as f:
-                        self.vector_store = pickle.load(f)
-                    logger.info(f"Loaded vector store from {VECTOR_STORE_PATH}")
-                else:
-                    logger.info("No existing vector store found. Creating a new one.")
-                    self.rebuild_vector_store()
+                logger.info("No existing vector store found. Creating a new one.")
+                self.rebuild_vector_store()
                     
         except Exception as e:
             logger.error(f"Error initializing vector store: {str(e)}")
             # Create an empty FAISS vector store as fallback
             self.vector_store = FAISS.from_texts([""], self.embedding_model)
-    
-    def _create_pinecone_index(self, index_name):
-        """Create a new Pinecone index with the appropriate dimension."""
-        # Get embeddings dimension for the chosen model
-        dimension = len(self.embedding_model.embed_query("Test"))
-        
-        # Create the index
-        pinecone.create_index(
-            name=index_name,
-            dimension=dimension,
-            metric="cosine"
-        )
-        logger.info(f"Created new Pinecone index: {index_name} with dimension {dimension}")
     
     def add_product_data(self, file_path: str) -> bool:
         """
@@ -135,28 +89,16 @@ class RAGService:
             )
             chunks = text_splitter.split_documents(documents)
             
-            # Add the chunks to the vector store
-            if self.use_pinecone:
-                # Add to Pinecone
-                pinecone_index_name = os.getenv("PINECONE_INDEX_NAME")
-                if not self.vector_store:
-                    self.vector_store = Pinecone.from_documents(
-                        chunks, self.embedding_model, index_name=pinecone_index_name
-                    )
-                else:
-                    self.vector_store.add_documents(chunks)
-                logger.info(f"Added {len(chunks)} chunks to Pinecone index")
+            # Add to local FAISS
+            if not self.vector_store:
+                self.vector_store = FAISS.from_documents(chunks, self.embedding_model)
             else:
-                # Add to local FAISS
-                if not self.vector_store:
-                    self.vector_store = FAISS.from_documents(chunks, self.embedding_model)
-                else:
-                    self.vector_store.add_documents(chunks)
-                
-                # Save the updated vector store
-                with open(VECTOR_STORE_PATH, 'wb') as f:
-                    pickle.dump(self.vector_store, f)
-                logger.info(f"Added {len(chunks)} chunks to local vector store and saved to {VECTOR_STORE_PATH}")
+                self.vector_store.add_documents(chunks)
+            
+            # Save the updated vector store
+            with open(VECTOR_STORE_PATH, 'wb') as f:
+                pickle.dump(self.vector_store, f)
+            logger.info(f"Added {len(chunks)} chunks to local vector store and saved to {VECTOR_STORE_PATH}")
             
             return True
             
@@ -172,20 +114,8 @@ class RAGService:
             bool: True if successful, False otherwise
         """
         try:
-            # Create a new vector store
-            if self.use_pinecone:
-                # For Pinecone, we'll first clear the index then re-add all documents
-                pinecone_index_name = os.getenv("PINECONE_INDEX_NAME")
-                if pinecone_index_name in pinecone.list_indexes():
-                    logger.info(f"Clearing Pinecone index: {pinecone_index_name}")
-                    index = pinecone.Index(pinecone_index_name)
-                    index.delete(delete_all=True)
-                    
-                # Initialize empty vector store
-                self.vector_store = None
-            else:
-                # For local FAISS, we'll create a new vector store
-                self.vector_store = FAISS.from_texts([""], self.embedding_model)
+            # Create a new local FAISS vector store
+            self.vector_store = FAISS.from_texts([""], self.embedding_model)
             
             # Add all files in the product_data directory
             success = True
@@ -243,12 +173,7 @@ class RAGService:
 _rag_service = None
 
 def get_rag_service() -> RAGService:
-    """
-    Get the RAG service singleton instance.
-    
-    Returns:
-        RAGService: The RAG service instance
-    """
+    """Get or create the RAG service singleton."""
     global _rag_service
     if _rag_service is None:
         _rag_service = RAGService()
