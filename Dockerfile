@@ -1,12 +1,27 @@
 # Multi-stage build for optimized deployment
 FROM node:18-alpine as frontend-build
 WORKDIR /app
+
+# Copy package files first for better caching
 COPY site-visit-report-app/frontend/package*.json ./
+
+# Install dependencies
 RUN npm ci --only=production=false
+
+# Copy all frontend source files
 COPY site-visit-report-app/frontend/ ./
+
+# Debug: List the structure to verify files are copied correctly
+RUN ls -la src/
+RUN ls -la src/lib/ || echo "lib directory not found"
+RUN ls -la src/components/ui/ || echo "ui directory not found"
+
+# Set environment variables
 ENV REACT_APP_API_URL=/api
 ENV GENERATE_SOURCEMAP=false
 ENV CI=false
+
+# Build the application
 RUN npm run build
 
 # Python backend

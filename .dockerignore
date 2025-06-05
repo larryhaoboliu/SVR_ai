@@ -26,8 +26,7 @@ venv/
 env/
 .env
 
-# Build artifacts
-build/
+# Build artifacts (only exclude host build outputs, not source files)
 dist/
 *.egg-info/
 
@@ -36,13 +35,23 @@ test/
 tests/
 *.test.js
 
-# Images and media (not needed for deployment)
-*.jpg
-*.jpeg
-*.png
-*.gif
-*.svg
-*.ico
+# Large images in root (not needed for deployment)
+/*.jpg
+/*.jpeg
+/*.png
+/*.gif
+/*.ico
+IMG_*.JPG
+IMG_*.JPEG
+*.JPEG
+Aluma*.jpg
+Fastener*.png
+PreTape*.png
+Seam*.jpg
+pipe*.jpg
+watermelon.jpg
+pineapple.jpg
+apple.jpg
 
 # Generated reports
 Generated Reports/
