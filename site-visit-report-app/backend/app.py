@@ -66,10 +66,18 @@ def serve_react_app():
 @app.route('/<path:path>')
 def serve_react_static(path):
     """Serve React static files or fallback to index.html for client-side routing"""
-    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+    # Don't handle API routes here
+    if path.startswith('api/'):
+        from flask import abort
+        abort(404)
+    
+    # Check if it's a static file that exists
+    static_file_path = os.path.join(app.static_folder, path)
+    if os.path.isfile(static_file_path):
         return send_from_directory(app.static_folder, path)
-    else:
-        return send_from_directory(app.static_folder, 'index.html')
+    
+    # For all other routes (like /admin/access), serve the React app
+    return send_from_directory(app.static_folder, 'index.html')
 
 @app.route("/health", methods=["GET"])
 def health_check():
