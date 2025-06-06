@@ -214,7 +214,7 @@ const AccessAdmin = () => {
       setAdminVerified(true);
     } else {
       // Set a default admin password for development/testing
-      const defaultPassword = 'admin';
+      const defaultPassword = 'admin123';
       setAdminPassword(defaultPassword);
       
       // Auto-verify with default password

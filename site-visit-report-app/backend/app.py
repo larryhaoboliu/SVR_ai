@@ -1,6 +1,6 @@
 import base64
 import requests
-from flask import Flask, request, jsonify, send_file, send_from_directory
+from flask import Flask, request, jsonify, send_file, send_from_directory, abort
 import os
 import sys
 import traceback
@@ -63,18 +63,28 @@ def serve_react_app():
     """Serve the React app's index.html"""
     return send_from_directory(app.static_folder, 'index.html')
 
+# Specific route for admin pages
+@app.route('/admin')
+@app.route('/admin/')
+@app.route('/admin/<path:subpath>')
+def serve_admin_pages(subpath=None):
+    """Serve the React app for admin routes"""
+    return send_from_directory(app.static_folder, 'index.html')
+
 @app.route('/<path:path>')
 def serve_react_static(path):
     """Serve React static files or fallback to index.html for client-side routing"""
     # Don't handle API routes here
     if path.startswith('api/'):
-        from flask import abort
         abort(404)
     
     # Check if it's a static file that exists
-    static_file_path = os.path.join(app.static_folder, path)
-    if os.path.isfile(static_file_path):
-        return send_from_directory(app.static_folder, path)
+    try:
+        static_file_path = os.path.join(app.static_folder, path)
+        if os.path.isfile(static_file_path):
+            return send_from_directory(app.static_folder, path)
+    except:
+        pass
     
     # For all other routes (like /admin/access), serve the React app
     return send_from_directory(app.static_folder, 'index.html')
